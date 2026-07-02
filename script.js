@@ -95,7 +95,7 @@ function normalizePhoto(row) {
     date: row.date,
     caption: row.caption || "",
     image_url: row.image_url,
-    storage_path: row.storage_path,
+    storage_path: "",
     created_at: row.created_at
   };
 }

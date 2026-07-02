@@ -71,8 +71,7 @@ export async function uploadPhoto({ file, date, caption }) {
     .insert({
       date,
       caption,
-      image_url: imageUrl,
-      storage_path: path
+      image_url: imageUrl
     })
     .select()
     .single();
@@ -82,13 +81,6 @@ export async function uploadPhoto({ file, date, caption }) {
 }
 
 export async function removePhoto(photo) {
-  if (photo.storage_path) {
-    await supabase
-      .storage
-      .from(PHOTO_BUCKET)
-      .remove([photo.storage_path]);
-  }
-
   const { error } = await supabase
     .from("photos")
     .delete()
