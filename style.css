@@ -172,6 +172,14 @@ button {
 
 .day.today { outline: 3px solid #ff7aaa; }
 
+.day.selected {
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.32);
+}
+
+.day.has-photo .tag {
+  display: none;
+}
+
 .day .num {
   font-weight: 900;
   font-size: 15px;

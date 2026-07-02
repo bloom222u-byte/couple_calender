@@ -12,7 +12,7 @@ import {
 const calendarEl = document.getElementById("calendar");
 const monthTitleEl = document.getElementById("monthTitle");
 const loveDaysEl = document.getElementById("loveDays");
-const weeklyDateCountEl = document.getElementById("weeklyDateCount");
+const monthlyDateCountEl = document.getElementById("monthlyDateCount");
 const monthlyPhotoCountEl = document.getElementById("monthlyPhotoCount");
 const eventListEl = document.getElementById("eventList");
 const photoListEl = document.getElementById("photoList");
@@ -26,6 +26,7 @@ let currentMonth = now.getMonth();
 let events = [];
 let photos = [];
 let isLoading = false;
+let selectedDateKey = toDateKey(new Date());
 
 const holidays = {
   "2026-01-01": "신정", "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴",
@@ -78,6 +79,13 @@ function dateKeyFromParts(year, monthIndex, day) {
   return `${year}-${pad(monthIndex + 1)}-${pad(day)}`;
 }
 
+function selectDate(dateKey, shouldRender = true) {
+  selectedDateKey = dateKey;
+  document.getElementById("eventDate").value = dateKey;
+  document.getElementById("photoDate").value = dateKey;
+  if (shouldRender) renderCalendar();
+}
+
 function normalizeEvent(row) {
   return {
     id: row.id,
@@ -128,21 +136,17 @@ function renderStats() {
   const diff = Math.floor((todayOnly - startDate) / (1000 * 60 * 60 * 24)) + 1;
   loveDaysEl.textContent = diff > 0 ? `D+${diff}` : `D-${Math.abs(diff) + 1}`;
 
-  const day = today.getDay();
-  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - day);
-  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - day));
-
   const uniqueDateDates = new Set(
     events
       .filter(e => e.type === "date")
       .filter(e => {
         const d = new Date(e.date + "T00:00:00");
-        return d >= weekStart && d <= weekEnd;
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
       })
       .map(e => e.date)
   );
 
-  weeklyDateCountEl.textContent = `${uniqueDateDates.size}일`;
+  monthlyDateCountEl.textContent = `${uniqueDateDates.size}일`;
 
   const monthPhotos = photos.filter(p => {
     const d = new Date(p.date + "T00:00:00");
@@ -195,8 +199,12 @@ function renderCalendar() {
     const key = dateKeyFromParts(cellYear, cellMonth, dayNum);
     if (muted) cell.classList.add("muted");
     if (key === toDateKey(new Date())) cell.classList.add("today");
+    if (key === selectedDateKey) cell.classList.add("selected");
 
-    cell.addEventListener("click", () => openDayDetail(key));
+    cell.addEventListener("click", () => {
+      selectDate(key);
+      openDayDetail(key);
+    });
 
     const num = document.createElement("div");
     num.className = "num";
@@ -204,7 +212,9 @@ function renderCalendar() {
     cell.appendChild(num);
 
     const dayPhotos = photos.filter(p => p.date === key);
-    if (dayPhotos.length > 0) {
+    const hasPhotos = dayPhotos.length > 0;
+
+    if (hasPhotos) {
       cell.classList.add("has-photo");
       cell.style.backgroundImage = `url("${dayPhotos[0].image_url}")`;
 
@@ -212,17 +222,17 @@ function renderCalendar() {
       count.className = "photo-count";
       count.textContent = dayPhotos.length > 1 ? `📷 +${dayPhotos.length - 1}` : "📷";
       cell.appendChild(count);
+    } else {
+      if (holidays[key]) cell.appendChild(makeTag("holiday", `❤️ ${holidays[key]}`));
+
+      solarTerms
+        .filter(t => t.month === cellMonth + 1 && t.day === dayNum)
+        .forEach(t => cell.appendChild(makeTag("term", `🌿 ${t.name}`)));
+
+      events
+        .filter(e => e.date === key)
+        .forEach(e => cell.appendChild(makeTag(e.type, `${typeEmoji[e.type]} ${e.title}`)));
     }
-
-    if (holidays[key]) cell.appendChild(makeTag("holiday", `❤️ ${holidays[key]}`));
-
-    solarTerms
-      .filter(t => t.month === cellMonth + 1 && t.day === dayNum)
-      .forEach(t => cell.appendChild(makeTag("term", `🌿 ${t.name}`)));
-
-    events
-      .filter(e => e.date === key)
-      .forEach(e => cell.appendChild(makeTag(e.type, `${typeEmoji[e.type]} ${e.title}`)));
 
     calendarEl.appendChild(cell);
   }
@@ -479,6 +489,7 @@ function goToday() {
 
 function setDefaultDate() {
   const today = toDateKey(new Date());
+  selectedDateKey = today;
   document.getElementById("eventDate").value = today;
   document.getElementById("photoDate").value = today;
 }

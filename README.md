@@ -1,33 +1,19 @@
-# OurDays v1.1
+# OurDays v1.2
 
-Supabase 연결 버전입니다.
+## 수정 내용
 
-## v1.1 수정 내용
+- 달력에서 날짜를 선택하면 `일정 입력`과 `사진 올리기`의 날짜가 자동 선택됩니다.
+- 선택한 날짜는 보라색 테두리로 표시됩니다.
+- 사진이 있는 날짜는 달력 칸에서 일정/공휴일/절기 텍스트를 숨기고 사진만 크게 표시합니다.
+- 상세 내역을 누르면 해당 날짜의 일정 텍스트와 사진을 확인할 수 있습니다.
+- `이번 주 만난 날` 집계를 `이번 달 만난 날`로 변경했습니다.
 
-- `photos.storage_path` 컬럼 없이 작동하도록 수정
-- 현재 photos 테이블 구조 그대로 사용 가능
-  - `id`
-  - `date`
-  - `caption`
-  - `image_url`
-  - `created_at`
-- 사진은 Supabase Storage `couple-photos`에 업로드되고, 공개 URL만 `photos.image_url`에 저장됩니다.
-- 사진 삭제 시 DB 기록만 삭제됩니다. Storage 파일 원본 삭제는 v1.2에서 `storage_path` 컬럼 추가 후 다시 붙일 수 있습니다.
+## GitHub 업로드
 
-## 업로드할 파일
+압축을 풀고 아래 5개 파일을 저장소 루트에 덮어쓰기 업로드하세요.
 
-GitHub 저장소 루트에 아래 파일을 덮어쓰기 업로드하세요.
-
-- `index.html`
-- `style.css`
-- `script.js`
-- `supabase.js`
-- `config.js`
-
-## 확인할 Supabase 설정
-
-1. `events`, `photos` 테이블이 있어야 합니다.
-2. `photos` 테이블은 현재처럼 `image_url`까지만 있어도 됩니다.
-3. Storage bucket 이름은 `couple-photos`여야 합니다.
-4. `couple-photos` bucket은 Public이어야 합니다.
-5. Storage policy에서 anon select/insert/delete가 허용되어야 합니다.
+- index.html
+- style.css
+- script.js
+- supabase.js
+- config.js
