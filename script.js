@@ -310,6 +310,77 @@ function previewPhotos() {
   });
 }
 
+
+function compressImage(file, maxSize = 1600, quality = 0.78) {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) {
+      resolve(file);
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = event => {
+      const img = new Image();
+
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height && width > maxSize) {
+          height = Math.round((height * maxSize) / width);
+          width = maxSize;
+        } else if (height >= width && height > maxSize) {
+          width = Math.round((width * maxSize) / height);
+          height = maxSize;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error("이미지 압축에 실패했습니다."));
+              return;
+            }
+
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+              {
+                type: "image/jpeg",
+                lastModified: Date.now()
+              }
+            );
+
+            resolve(compressedFile);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+
+      img.onerror = () => reject(new Error("이미지를 읽지 못했습니다."));
+      img.src = event.target.result;
+    };
+
+    reader.onerror = () => reject(new Error("파일을 읽지 못했습니다."));
+    reader.readAsDataURL(file);
+  });
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)}KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
+}
+
+
 async function addPhotos() {
   const date = document.getElementById("photoDate").value;
   const files = Array.from(document.getElementById("photoFiles").files);
@@ -328,11 +399,15 @@ async function addPhotos() {
   try {
     const btn = document.getElementById("addPhotosBtn");
     btn.disabled = true;
-    btn.textContent = "사진 업로드 중...";
+    btn.textContent = "사진 압축 및 업로드 중...";
 
     for (const file of files) {
       if (file.type.startsWith("image/")) {
-        await uploadPhoto({ file, date, caption });
+        const compressedFile = await compressImage(file);
+        console.log(
+          `사진 압축: ${file.name} ${formatBytes(file.size)} → ${formatBytes(compressedFile.size)}`
+        );
+        await uploadPhoto({ file: compressedFile, date, caption });
       }
     }
 
