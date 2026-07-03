@@ -218,10 +218,7 @@ function renderCalendar() {
       cell.classList.add("has-photo");
       cell.style.backgroundImage = `url("${dayPhotos[0].image_url}")`;
 
-      const count = document.createElement("div");
-      count.className = "photo-count";
-      count.textContent = dayPhotos.length > 1 ? `📷 +${dayPhotos.length - 1}` : "📷";
-      cell.appendChild(count);
+      // v1.4: 사진이 있는 날짜는 아이콘 없이 사진만 표시합니다.
     } else {
       if (holidays[key]) cell.appendChild(makeTag("holiday", `❤️ ${holidays[key]}`));
 

@@ -161,7 +161,7 @@ button {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.48));
+  background: transparent;
   z-index: 1;
 }
 
@@ -554,7 +554,7 @@ textarea {
   }
 
   .day.has-photo::before {
-    background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.60));
+    background: transparent;
   }
 
   .tag {
@@ -669,4 +669,15 @@ textarea {
   .title-card h1 {
     font-size: 22px;
   }
+}
+
+
+/* v1.4 photo-only calendar display */
+.day.has-photo::before {
+  display: none !important;
+  background: transparent !important;
+}
+
+.day.has-photo .photo-count {
+  display: none !important;
 }
