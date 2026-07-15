@@ -224,11 +224,11 @@ function renderCalendar() {
 
       solarTerms
         .filter(t => t.month === cellMonth + 1 && t.day === dayNum)
-        .forEach(t => cell.appendChild(makeTag("term", `🌿 ${t.name}`)));
+        .forEach(t => cell.appendChild(makeTag("term", t.name)));
 
       events
         .filter(e => e.date === key)
-        .forEach(e => cell.appendChild(makeTag(e.type, `${typeEmoji[e.type]} ${e.title}`)));
+        .forEach(e => cell.appendChild(makeTag(e.type, e.title)));
     }
 
     calendarEl.appendChild(cell);
@@ -239,11 +239,19 @@ function renderCalendar() {
   renderStats();
 }
 
+
+function cleanCalendarLabel(text) {
+  return String(text)
+    .replace(/^[\s\uFE0F\u200D]+/g, "")
+    .replace(/^[^\p{L}\p{N}]+/u, "")
+    .trim();
+}
+
 function makeTag(className, text) {
   const tag = document.createElement("div");
   tag.className = `tag ${className}`;
-  tag.textContent = text;
-  tag.title = text;
+  tag.textContent = cleanCalendarLabel(text);
+  tag.title = cleanCalendarLabel(text);
   return tag;
 }
 

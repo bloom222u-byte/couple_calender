@@ -760,3 +760,23 @@ textarea {
   .stats-card { margin-top: 8px; }
   .quick-add-card { margin-top: 18px; padding-top: 16px; }
 }
+
+
+/* v1.7 calendar text cleanup */
+@media (max-width: 760px) {
+  .day:not(.has-photo) .tag {
+    padding-left: 4px !important;
+    padding-right: 3px !important;
+    font-size: 10.5px !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .day:not(.has-photo) .tag {
+    font-size: 9.5px !important;
+    letter-spacing: -0.7px !important;
+  }
+}
