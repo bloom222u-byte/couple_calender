@@ -681,3 +681,68 @@ textarea {
 .day.has-photo .photo-count {
   display: none !important;
 }
+
+
+/* v1.5 mobile calendar readability */
+.day.has-photo::before {
+  display: none !important;
+  background: transparent !important;
+}
+
+.day.has-photo .photo-count {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .day:not(.has-photo) {
+    min-height: 98px;
+  }
+
+  .day:not(.has-photo) .tag {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 4px 5px;
+    border-radius: 7px;
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    letter-spacing: -0.4px;
+  }
+
+  .tag.boyfriend {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .tag.girlfriend {
+    background: #fce7f3;
+    color: #be185d;
+  }
+
+  .tag.date {
+    background: #fff1c7;
+    color: #a16207;
+  }
+
+  .tag.holiday {
+    background: #ffe4e9;
+    color: #e11d48;
+  }
+
+  .tag.term {
+    background: #e7f7ec;
+    color: #15803d;
+  }
+}
+
+@media (max-width: 390px) {
+  .day:not(.has-photo) .tag {
+    font-size: 9.5px;
+    padding: 3px 4px;
+    letter-spacing: -0.6px;
+  }
+}

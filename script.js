@@ -220,7 +220,7 @@ function renderCalendar() {
 
       // v1.4: 사진이 있는 날짜는 아이콘 없이 사진만 표시합니다.
     } else {
-      if (holidays[key]) cell.appendChild(makeTag("holiday", `❤️ ${holidays[key]}`));
+      if (holidays[key]) cell.appendChild(makeTag("holiday", holidays[key]));
 
       solarTerms
         .filter(t => t.month === cellMonth + 1 && t.day === dayNum)
