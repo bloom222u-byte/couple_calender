@@ -3,10 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OurDays v1.7</title>
-  <link rel="stylesheet" href="./style.css?v=1.7" />
+  <title>OurDays v1.9</title>
+  <link rel="stylesheet" href="./style.css?v=1.9" />
+
+  <meta name="theme-color" content="#ff4f8b" />
+  <link rel="manifest" href="./manifest.json?v=1.9" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png?v=1.9" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=1.9" />
+
 </head>
 <body>
+
+  <div id="splashScreen" class="splash-screen">
+    <img src="./icon-512.png" alt="OurDays" />
+    <div class="splash-title">OurDays</div>
+  </div>
+
   <div class="app">
     <section class="hero">
       <div class="title-card">
@@ -121,6 +133,16 @@
     </div>
   </div>
 
-  <script type="module" src="./script.js?v=1.7"></script>
+  <script type="module" src="./script.js?v=1.9"></script>
+
+  <script>
+    window.addEventListener("load", () => {
+      const splash = document.getElementById("splashScreen");
+      if (!splash) return;
+      setTimeout(() => splash.classList.add("hide"), 800);
+      setTimeout(() => splash.remove(), 1350);
+    });
+  </script>
+
 </body>
 </html>
