@@ -12,6 +12,7 @@ import {
 const calendarEl = document.getElementById("calendar");
 const monthTitleEl = document.getElementById("monthTitle");
 const loveDaysEl = document.getElementById("loveDays");
+const totalDateCountEl = document.getElementById("totalDateCount");
 const monthlyDateCountEl = document.getElementById("monthlyDateCount");
 const monthlyPhotoCountEl = document.getElementById("monthlyPhotoCount");
 const eventListEl = document.getElementById("eventList");
@@ -27,6 +28,7 @@ let events = [];
 let photos = [];
 let isLoading = false;
 let selectedDateKey = toDateKey(new Date());
+let modalDateKey = selectedDateKey;
 
 const holidays = {
   "2026-01-01": "신정", "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴",
@@ -136,7 +138,11 @@ function renderStats() {
   const diff = Math.floor((todayOnly - startDate) / (1000 * 60 * 60 * 24)) + 1;
   loveDaysEl.textContent = diff > 0 ? `D+${diff}` : `D-${Math.abs(diff) + 1}`;
 
-  const uniqueDateDates = new Set(
+  const allDateDays = new Set(
+    events.filter(e => e.type === "date").map(e => e.date)
+  );
+
+  const monthDateDays = new Set(
     events
       .filter(e => e.type === "date")
       .filter(e => {
@@ -146,14 +152,8 @@ function renderStats() {
       .map(e => e.date)
   );
 
-  monthlyDateCountEl.textContent = `${uniqueDateDates.size}일`;
-
-  const monthPhotos = photos.filter(p => {
-    const d = new Date(p.date + "T00:00:00");
-    return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
-  });
-
-  monthlyPhotoCountEl.textContent = `${monthPhotos.length}장`;
+  totalDateCountEl.textContent = `${allDateDays.size}일`;
+  monthlyDateCountEl.textContent = `${monthDateDays.size}일`;
 }
 
 function renderCalendar() {
@@ -498,6 +498,7 @@ function renderPhotoList() {
 }
 
 function openDayDetail(dateKey) {
+  modalDateKey = dateKey;
   const dayEvents = events.filter(e => e.date === dateKey);
   const dayPhotos = photos.filter(p => p.date === dateKey);
   const modal = document.getElementById("dayModal");
@@ -514,7 +515,7 @@ function openDayDetail(dateKey) {
         ${e.memo ? `<div class="event-meta">${escapeHtml(e.memo)}</div>` : ""}
       </div>
     `).join("")
-    : `<p class="empty">이날 입력된 일정이 없습니다.</p>`;
+    : `<p class="empty">입력된 일정이 없습니다. 아래에서 바로 추가해보세요.</p>`;
 
   const photoHtml = dayPhotos.length
     ? `<div class="modal-gallery">` + dayPhotos.map(p => `
@@ -532,7 +533,29 @@ function openDayDetail(dateKey) {
     ${photoHtml}
   `;
 
+  document.getElementById("modalEventTitle").value = "";
+  document.getElementById("modalEventMemo").value = "";
   modal.classList.add("open");
+}
+
+async function addEventFromModal() {
+  const type = document.getElementById("modalEventType").value;
+  const title = document.getElementById("modalEventTitle").value.trim();
+  const memo = document.getElementById("modalEventMemo").value.trim();
+
+  if (!modalDateKey) { alert("날짜를 다시 선택해주세요."); return; }
+  if (!title) { alert("일정 제목을 입력해주세요."); return; }
+
+  try {
+    await createEvent({ date: modalDateKey, type, title, memo });
+    document.getElementById("modalEventTitle").value = "";
+    document.getElementById("modalEventMemo").value = "";
+    await loadData();
+    openDayDetail(modalDateKey);
+  } catch (error) {
+    console.error(error);
+    alert(`일정 저장에 실패했습니다: ${error.message || error}`);
+  }
 }
 
 function closeModal() {
@@ -583,6 +606,7 @@ function bindEvents() {
   document.getElementById("addPhotosBtn").addEventListener("click", addPhotos);
   document.getElementById("photoFiles").addEventListener("change", previewPhotos);
   document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+  document.getElementById("modalAddEventBtn").addEventListener("click", addEventFromModal);
   document.getElementById("dayModal").addEventListener("click", event => {
     if (event.target.id === "dayModal") closeModal();
   });

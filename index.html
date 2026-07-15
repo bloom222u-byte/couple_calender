@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OurDays v1.5</title>
+  <title>OurDays v1.6</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -11,25 +11,16 @@
     <section class="hero">
       <div class="title-card">
         <h1>💘 OurDays <span id="loveDays" class="title-dplus">--</span></h1>
-        <p>둘만의 일정과 사진을 날짜별로 모아보는 커플 캘린더입니다.</p>
-        <div class="legend">
-          <span>💙 남친 일정</span>
-          <span>💗 여친 일정</span>
-          <span>💛 데이트</span>
-          <span>📷 추억 사진</span>
-          <span>❤️ 공휴일</span>
-          <span>🌿 24절기</span>
-        </div>
       </div>
 
       <div class="stats-card">
         <div class="stat">
-          <span>이번 달 만난 날</span>
-          <strong id="monthlyDateCount">--일</strong>
+          <span>우리 만난 날</span>
+          <strong id="totalDateCount">--일</strong>
         </div>
         <div class="stat">
-          <span>이번 달 추억 사진</span>
-          <strong id="monthlyPhotoCount">--장</strong>
+          <span>이번 달 만난 날</span>
+          <strong id="monthlyDateCount">--일</strong>
         </div>
       </div>
     </section>
@@ -112,6 +103,21 @@
         <button class="close-btn" id="closeModalBtn">×</button>
       </div>
       <div id="modalBody"></div>
+
+      <div class="quick-add-card">
+        <h4>➕ 이 날짜에 일정 추가</h4>
+        <label for="modalEventType">구분</label>
+        <select id="modalEventType">
+          <option value="boyfriend">남친 일정</option>
+          <option value="girlfriend">여친 일정</option>
+          <option value="date">데이트 일정</option>
+        </select>
+        <label for="modalEventTitle">일정 제목</label>
+        <input type="text" id="modalEventTitle" placeholder="예: 저녁 데이트, 야근, 친구 약속" />
+        <label for="modalEventMemo">메모</label>
+        <textarea id="modalEventMemo" placeholder="장소나 준비물을 적어보세요."></textarea>
+        <button class="save-btn" id="modalAddEventBtn">이 날짜에 추가하기</button>
+      </div>
     </div>
   </div>
 

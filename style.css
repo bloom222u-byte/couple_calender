@@ -746,3 +746,17 @@ textarea {
     letter-spacing: -0.6px;
   }
 }
+
+
+/* v1.6 compact title and modal quick add */
+.title-card { padding-bottom: 20px; }
+.title-card h1 { margin-bottom: 0; }
+.quick-add-card { margin-top: 22px; padding-top: 18px; border-top: 1px solid #f0e7ec; }
+.quick-add-card h4 { margin: 0 0 12px; font-size: 17px; }
+.quick-add-card textarea { min-height: 62px; }
+@media (max-width: 760px) {
+  .title-card { padding: 16px 18px; }
+  .title-card h1 { margin: 0; }
+  .stats-card { margin-top: 8px; }
+  .quick-add-card { margin-top: 18px; padding-top: 16px; }
+}
